@@ -1,6 +1,7 @@
 import asyncio
 from aiogram import Bot, Dispatcher, F, types
-from keyboards.default import default_keyboard
+from keyboards.reply import register_keyboard, default_keyboard
+from keyboards.inline import sex_keyboard
 from aiogram.types import ReplyKeyboardRemove
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -37,7 +38,7 @@ async def process_age_failed(message: types.Message, bot: Bot) -> None:
     await bot.send_message(message.from_user.id, "Возраст должен быть от 6 до 100")
 
 
-@dp.message(StateFilter(UserRegistration.weight), lambda msg: msg.text.isdigit() and 30 <= int(msg.text) <= 250)
+@dp.message(StateFilter(UserRegistration.weight), lambda msg: msg.text.isdigit() and 30 <= float(msg.text) <= 250)
 async def process_weight(message: types.Message, state: FSMContext, bot: Bot) -> None:
     await state.update_data(weight=message.text)
     await state.set_state(UserRegistration.height)
@@ -49,9 +50,18 @@ async def process_weight_failed(message: types.Message, bot: Bot) -> None:
     await bot.send_message(message.from_user.id, "Вес должен быть от 30 до 250")
     
 
-@dp.message(StateFilter(UserRegistration.height), lambda msg: msg.text.isdigit() and 90 < int(msg.text) <= 250)
+@dp.message(StateFilter(UserRegistration.height), lambda msg: msg.text.isdigit() and 90 < float(msg.text) <= 250)
 async def process_height(message: types.Message, state: FSMContext, bot: Bot) -> None:
     await state.update_data(height=message.text)
+    await bot.send_message(message.from_user.id, "Выберите пол", reply_markup=sex_keyboard)
+
+
+@dp.message(StateFilter(UserRegistration.height), lambda msg: msg.text.isdigit())
+async def process_height_failed(message: types.Message, bot: Bot) -> None:
+    await bot.send_message(message.from_user.id, "Рост должен быть от 90 до 250 (см)")
+
+@dp.message(StateFilter(UserRegistration.weight), lambda msg: msg.text.isdigit() and 30 <= float(msg.text) <= 250)
+async def process_sex(message: types.Message, state: FSMContext, bot: Bot) -> None:
     state_data = await state.get_data()
     age = state_data.get("age")
     weight = state_data.get("weight")
@@ -60,15 +70,9 @@ async def process_height(message: types.Message, state: FSMContext, bot: Bot) ->
     await bot.send_message(message.from_user.id, f"Вы успешно ввели данные.\n Возраст: {age}, вес: {weight}, рост: {height}\n При необходимости их можно изменить нажав, на кнопку снизу\n", reply_markup=default_keyboard)
     await state.clear()
 
-
-@dp.message(StateFilter(UserRegistration.weight), lambda msg: msg.text.isdigit())
-async def process_weight_failed(message: types.Message, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, "Рост должен быть от 90 до 250 (см)")
-
-
 @dp.message(StateFilter(default_state), Command("start"))
 async def start_command(message: types.Message, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, "Бот спортзала X\nДля того, чтобы начать, нажмите на кнопку и введите свой возраст", reply_markup=default_keyboard) 
+    await bot.send_message(message.from_user.id, "Бот спортзала X\nДля того, чтобы начать, нажмите на кнопку", reply_markup=register_keyboard) 
         
 
 @dp.message(Command("help"))
@@ -83,8 +87,8 @@ async def set_age(message: types.Message, state: FSMContext, bot: Bot) -> None:
     await state.set_state(UserRegistration.age)
 
 
-@dp.message(Command("cancel"), ~StateFilter(default_state), bot: Bot)
-async def cancel_in_state(message: types.Message, state: FSMContext) -> None:
+@dp.message(Command("cancel"), ~StateFilter(default_state))
+async def cancel_in_state(message: types.Message, state: FSMContext, bot: Bot) -> None:
     await state.clear()
     await bot.send_message(message.from_user.id, "Operation canceled")
 

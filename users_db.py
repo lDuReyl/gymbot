@@ -8,6 +8,7 @@ cursor.executescript("""
 CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY,
     age INTEGER NOT NULL,
+    sex INTEGER NOT NULL,
     weight REAL NOT NULL,
     height REAL NOT NULL
 );
@@ -18,10 +19,10 @@ CREATE TABLE IF NOT EXISTS nutrients(
     carbohydrates INTEGER
 )""")
 
-def add_user(id, age, weight, height) -> bool:
+def add_user(id, age, sex, weight, height) -> bool:
     cursor.execute("SELECT id FROM users WHERE id=?", (id,))
     if cursor.fetchone() is None:
-        cursor.execute("INSERT INTO users (id, age, weight, height) VALUES(?, ?, ?, ?)", (id, age, weight, height))
+        cursor.execute("INSERT INTO users (id, age, sex, weight, height) VALUES(?, ?, ?, ?, ?)", (id, age, sex, weight, height))
         db.commit()
         return True
     return False
