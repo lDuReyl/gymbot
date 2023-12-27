@@ -4,24 +4,24 @@ from typing import Optional
 db = sqlite3.connect("./databases/users.sqlite")
 cursor = db.cursor()
 
-cursor.execute("DROP TABLE users")
-cursor.executescript("""CREATE TABLE IF NOT EXISTS users(
-id INTEGER PRIMARY_KEY,
-age INTEGER NOT NULL,
-weight REAL NOT NULL,
-height REAL NOT NULL,
+cursor.executescript("""
+CREATE TABLE IF NOT EXISTS users(
+    id INTEGER PRIMARY KEY,
+    age INTEGER NOT NULL,
+    weight REAL NOT NULL,
+    height REAL NOT NULL
 );
 CREATE TABLE IF NOT EXISTS nutrients(
-id INTEGER PRIMARY_KEY,
-proteins REAL,
-fats REAL,
-carbohydrates INTEGER
+    id INTEGER PRIMARY KEY,
+    proteins REAL,
+    fats REAL,
+    carbohydrates INTEGER
 )""")
 
-def add_user(id, age=101) -> bool:
+def add_user(id, age, weight, height) -> bool:
     cursor.execute("SELECT id FROM users WHERE id=?", (id,))
     if cursor.fetchone() is None:
-        cursor.execute("INSERT INTO users (id, age) VALUES(?, ?)", (id, age))
+        cursor.execute("INSERT INTO users (id, age, weight, height) VALUES(?, ?, ?, ?)", (id, age, weight, height))
         db.commit()
         return True
     return False
@@ -41,9 +41,9 @@ def set_nutrients(id: float, proteins: float, fats: float, carbohydrates: float)
     return True
 
 
-def set_age(id: int, value: int) -> bool:
+def set_field(id: int, field: int, value: int) -> bool:
     try:
-        cursor.execute("UPDATE users SET age=? WHERE id=?", (value, id))
+        cursor.execute("UPDATE users SET ?=? WHERE id=?", (field, value, id))
     except sqlite3.Error as e:
         print(e)
         return False
@@ -51,8 +51,8 @@ def set_age(id: int, value: int) -> bool:
     return True
 
 
-def get_age(id: int) -> Optional[int]:
-    user = cursor.execute("SELECT age FROM users WHERE id=?", (id,)).fetchone()
+def get_field(field: int) -> Optional[int]:
+    user = cursor.execute("SELECT age FROM users WHERE id=?", (field,)).fetchone()
     if user is None:
         return None
     return user[0]
