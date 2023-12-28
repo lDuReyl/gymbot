@@ -7,7 +7,7 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from os import getenv
 from dotenv import load_dotenv
-from stategroups import UserRegistration
+from stategroups.stategroups import UserRegistration
 
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.state import default_state
