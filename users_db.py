@@ -52,8 +52,8 @@ def set_field(id: int, field: int, value: int) -> bool:
     return True
 
 
-def get_field(field: int) -> Optional[int]:
-    user = cursor.execute("SELECT age FROM users WHERE id=?", (field,)).fetchone()
+def get_field(id: int, field: int) -> Optional[int]:
+    user = cursor.execute("SELECT ? FROM users WHERE id=?", (field, id)).fetchone()
     if user is None:
         return None
     return user[0]

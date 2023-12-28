@@ -31,11 +31,11 @@ async def startup():
 async def get_sex(query: CallbackQuery, state: State, bot: Bot):
     query.answer()
     state_data = await state.get_data()
-    age = state_data.get("age")
-    weight = state_data.get("weight")
-    height = state_data.get("height")
+    age = await state_data.get("age")
+    weight = await state_data.get("weight")
+    height = await state_data.get("height")
     add_user(query.from_user.id, age, query.data=="male", weight, height)
-    await bot.send_message(query.from_user.id, f"Вы успешно ввели данные.\nВозраст: {age},\nвес: {weight},\nрост: {height}\nПол: {'мужской' if query.data == 'male' else 'женский'}.\nПри необходимости их можно изменить нажав, на кнопку снизу\n", reply_markup=default_keyboard)
+    await bot.send_message(query.from_user.id, f"Вы успешно ввели данные.\nВозраст: {age},\nвес: {weight},\nрост: {height},\nПол: {'мужской' if query.data == 'male' else 'женский'}.\nПри необходимости их можно изменить нажав, на кнопку снизу\n", reply_markup=default_keyboard)
     await state.clear()
 
 
@@ -46,7 +46,7 @@ async def process_age(message: types.Message, state: FSMContext, bot: Bot) -> No
     await bot.send_message(message.from_user.id, "Введите свой вес: ")
 
 
-@dp.message(StateFilter(UserRegistration.age), lambda msg: msg.text.isdigit())
+@dp.message(StateFilter(UserRegistration.age), lambda msg: msg.text.lstrip('-').isdigit())
 async def process_age_failed(message: types.Message, bot: Bot) -> None:
     await bot.send_message(message.from_user.id, "Возраст должен быть от 6 до 100")
 
@@ -69,7 +69,7 @@ async def process_height(message: types.Message, state: FSMContext, bot: Bot) ->
     await bot.send_message(message.from_user.id, "Выберите пол", reply_markup=sex_keyboard)
 
 
-@dp.message(StateFilter(UserRegistration.height), lambda msg: msg.text.isdigit())
+@dp.message(StateFilter(UserRegistration.height), lambda msg: msg.text.lstrip('-').isdigit())
 async def process_height_failed(message: types.Message, bot: Bot) -> None:
     await bot.send_message(message.from_user.id, "Рост должен быть от 90 до 250 (см)")
 
