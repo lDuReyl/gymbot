@@ -10,13 +10,13 @@ router = Router()
 
 @router.message(StateFilter(default_state), F.text.in_(["Ввести данные", "Изменить данные"]))
 async def set_age(message: Message, state: FSMContext, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, f"{message.from_user.first_name}, введите ваш возраст:", reply_markup=ReplyKeyboardRemove()) 
+    await bot.send_message(message.from_user.id, f"Введите ваш возраст:", reply_markup=ReplyKeyboardRemove()) 
     await state.set_state(UserRegistration.age)
 
 
 @router.message(StateFilter(default_state), Command("start"))
 async def start_command(message: Message, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, "Бот спортзала X\nДля того, чтобы начать, нажмите на кнопку", reply_markup=register_keyboard)
+    await bot.send_message(message.from_user.id, f"Бот спортзала X\nДля того, чтобы начать, нажмите на кнопку \"Ввести данные\". Вам потребуется ввести возраст, вес, рост и выбрать пол.", reply_markup=register_keyboard)
 
 
 @router.message(Command("help"))

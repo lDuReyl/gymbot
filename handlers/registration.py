@@ -14,7 +14,7 @@ router = Router()
 async def process_age(message: Message, state: FSMContext, bot: Bot) -> None:
     await state.update_data(age=message.text)
     await state.set_state(UserRegistration.weight)
-    await bot.send_message(message.from_user.id, "Введите свой вес: ")
+    await bot.send_message(message.from_user.id, "Введите ваш вес: ")
 
 
 @router.message(StateFilter(UserRegistration.age), is_int())
@@ -26,7 +26,7 @@ async def process_age_failed(message: Message, bot: Bot) -> None:
 async def process_weight(message: Message, state: FSMContext, bot: Bot) -> None:
     await state.update_data(weight=float(message.text))
     await state.set_state(UserRegistration.height)
-    await bot.send_message(message.from_user.id, "Введите свой рост:")
+    await bot.send_message(message.from_user.id, "Введите ваш рост:")
 
 
 @router.message(StateFilter(UserRegistration.weight), is_digit()) 
