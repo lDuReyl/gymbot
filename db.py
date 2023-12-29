@@ -1,7 +1,7 @@
 import sqlite3
 from typing import Optional, Tuple
 
-db = sqlite3.connect("./databases/users.sqlite")
+db = sqlite3.connect("./databases/db.sqlite")
 cursor = db.cursor()
 
 cursor.executescript("""
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS nutrients(
     id INTEGER PRIMARY KEY,
     proteins REAL,
     fats REAL,
-    carbohydrates INTEGER
+    carbohydrates REAL
 )""")
 
 def add_user(id: int, age: int, sex: int, weight: float, height: float) -> bool:
@@ -25,13 +25,13 @@ def add_user(id: int, age: int, sex: int, weight: float, height: float) -> bool:
         cursor.execute("INSERT INTO `users` (`id`, `age`, `sex`, `weight`, `height`) VALUES(?, ?, ?, ?, ?)", (id, age, sex, weight, height))
         db.commit()
         return True
-    cursor.execute("UPDATE `users` SET `age`=?, `sex`=?, `weight`=?, `height`=? WHERE `nutrients.id`=?", (age, sex, weight, height, id))
+    cursor.execute("UPDATE `users` SET `age`=?, `sex`=?, `weight`=?, `height`=? WHERE `id`=?", (age, sex, weight, height, id))
     db.commit()
     return False
 
 
 def set_nutrients(id: int, proteins: float, fats: float, carbohydrates: float) -> None:
-    nutrients = cursor.execute("SELECT `nutrients`.* WHERE `id`=?", (id,)).fetchone()
+    nutrients = cursor.execute("SELECT * FROM `nutrients` WHERE `id`=?", (id,)).fetchone()
     if nutrients is None:
         cursor.execute("INSERT INTO `nutrients` (`id`, `proteins`, `fats`, `carbohydrates`)", (id, proteins, fats, carbohydrates))
     else:

@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
 from stategroups.stategroups import UserRegistration
 from keyboards.reply import default_keyboard
-from db import add_user
+from db import add_user, set_nutrients
 
 router = Router()
 

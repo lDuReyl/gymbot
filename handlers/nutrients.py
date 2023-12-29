@@ -6,6 +6,7 @@ from aiogram.fsm.state import default_state
 from filters import is_digit
 from stategroups.stategroups import GetNutrients
 from db import get_nutrients, subtract_nutrients 
+from keyboards.reply import default_keyboard
 
 router = Router()
 
@@ -37,5 +38,5 @@ async def process_carbohydrates(message: Message, state: FSMContext, bot: Bot):
     fats = float(nutrients.get("fats"))
     carbohydrates = float(nutrients.get("carbohydrates"))
     subtract_nutrients(message.from_user.id, proteins, fats, carbohydrates)
-    await bot.send_message(message.from_user.id, "Осталось:\nБелки: {0}\nЖиры: {1}\nУглеводы: {2}".format(*get_nutrients(message.from_user.id)))
+    await bot.send_message(message.from_user.id, "Осталось:\nБелки: {0}\nЖиры: {1}\nУглеводы: {2}".format(*get_nutrients(message.from_user.id)), reply_markup=default_keyboard)
     await state.clear()
