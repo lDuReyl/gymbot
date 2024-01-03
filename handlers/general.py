@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter, Command
 from keyboards.reply import register_keyboard
 from stategroups.stategroups import UserRegistration
-from db import get_field
+from db import get_nutrients
 
 router = Router()
 
@@ -16,8 +16,8 @@ async def set_age(message: Message, state: FSMContext, bot: Bot) -> None:
 
 
 @router.message(F.text == "Проверить норму")
-async def get_daily_PFH_norm(message: Message):
-    await bot.send_message(message.from_user.id, get_field(message.from_user.id, "deily_calories"))
+async def get_daily_PFH_norm(message: Message, bot: Bot):
+    await bot.send_message(message.from_user.id, "Осталось:\nБелки: {0}\nЖиры: {1}\nУглеводы: {2}".format(*get_nutrients(message.from_user.id)))
 
 @router.message(StateFilter(default_state), Command("start"))
 async def start_command(message: Message, bot: Bot) -> None:
