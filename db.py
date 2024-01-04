@@ -4,8 +4,6 @@ from typing import Any, Tuple
 db = sqlite3.connect("./databases/db.sqlite")
 cursor = db.cursor()
 
-cursor.execute("DROP TABLE IF EXISTS users")
-cursor.execute("DROP TABLE IF EXISTS nutrients")
 cursor.executescript("""
 CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY,
@@ -24,7 +22,7 @@ CREATE TABLE IF NOT EXISTS nutrients(
     daily_calories REAL
 )""")
 
-def add_user(id: int, age: int, sex: int, weight: float, height: float, goal: int =1, activity: float=1.375) -> bool:
+def add_user(id: int, age: int, sex: int, weight: float, height: float, goal: int, activity: float) -> bool:
     cursor.execute("SELECT `id` FROM `users` WHERE `id`=?", (id,))
     if cursor.fetchone() is None:
         cursor.execute("INSERT INTO `users` (`id`, `age`, `sex`, `weight`, `height`, `goal`, `activity`) VALUES(?, ?, ?, ?, ?, ?,?)", (id, age, sex, weight, height, goal, activity))
