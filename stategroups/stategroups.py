@@ -4,6 +4,9 @@ class UserRegistration(StatesGroup):
     age = State()
     weight = State()
     height = State()
+    sex = State()
+    activity = State()
+    goal = State()
 
 
 class GetNutrients(StatesGroup):

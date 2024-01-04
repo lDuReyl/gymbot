@@ -1,7 +1,6 @@
 from aiogram import Bot, Router
 from aiogram.types import Message
-from keyboards.reply import *
-from keyboards.inline import *
+from keyboards.inline import sex_keyboard
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
 from filters import is_digit, is_int
@@ -38,6 +37,7 @@ async def process_weight_failed(message: Message, bot: Bot) -> None:
 async def process_height(message: Message, state: FSMContext, bot: Bot) -> None:
     await state.update_data(height=float(message.text))
     await bot.send_message(message.from_user.id, "Выберите пол", reply_markup=sex_keyboard)
+    await state.set_state(UserRegistration.sex)
 
 
 @router.message(StateFilter(UserRegistration.height), is_digit())
