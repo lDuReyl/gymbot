@@ -14,3 +14,13 @@ class GetNutrients(StatesGroup):
     fats = State()
     carbohydrates = State()
 
+
+class EditUserInfo(StatesGroup):
+    choose = State()
+    age = State()
+    weight = State()
+    height = State()
+    sex = State()
+    activity = State()
+    goal = State()
+

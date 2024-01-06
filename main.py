@@ -6,7 +6,9 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from handlers.general import router as general_commands_router
 from handlers.registration import router as registration_commands_router
 from handlers.nutrients import router as nutrients_router
+from handlers.edit_user_info import router as edit_user_info_router
 from callbacks.registration import router as callback_registration_router
+from callbacks.edit_user_info import router as callback_edit_user_info_router
 from scheduler import schedule_set_calories
 from config_reader import config
 
@@ -21,8 +23,10 @@ async def main() -> None:
     bot = Bot(config.BOT_TOKEN.get_secret_value())
     dp.startup.register(startup)
     dp.include_routers(
-        registration_commands_router,
         callback_registration_router,
+        callback_edit_user_info_router,
+        registration_commands_router,
+        edit_user_info_router,
         nutrients_router,
         general_commands_router
     )

@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS nutrients(
     daily_calories REAL
 )""")
 
+
 def add_user(id: int, age: int, sex: int, weight: float, height: float, goal: int, activity: float) -> bool:
     cursor.execute("SELECT `id` FROM `users` WHERE `id`=?", (id,))
     if cursor.fetchone() is None:
@@ -67,7 +68,7 @@ def set_user_field(id: int, field: str, value: Any) -> bool:
     try:
         cursor.execute("UPDATE `users` SET ?=? WHERE `id`=?", (field, value, id))
     except sqlite3.Error as e:
-        print(e)
+        print(f"sqlite error in set_user_field while processing\n UPDATE `users` SET {field}={value} WHERE id={id}:", e)
         return False
     db.commit()
     return True
@@ -85,7 +86,8 @@ def get_users_id() -> list[int]:
 
 
 def set_daily_calories(id: int) -> None:
-    age, sex, weight, height, goal, activity = get_user(id)
+    user = get_user(id)
+    age, sex, weight, height, activity = user[0], user[1], user[2], user[3], user[5]
     daily_calories: float
     if sex:
         daily_calories = (10 * weight + 6.25 * height - 5 * age + 5) * activity
