@@ -66,7 +66,7 @@ def set_nutrients_by_norm(id: int):
 
 def set_user_field(id: int, field: str, value: Any) -> bool:
     try:
-        cursor.execute("UPDATE `users` SET ?=? WHERE `id`=?", (field, value, id))
+        cursor.execute(f"UPDATE `users` SET {field}=? WHERE `id`=?", (value, id))
     except sqlite3.Error as e:
         print(f"sqlite error in set_user_field while processing\n UPDATE `users` SET {field}={value} WHERE id={id}:", e)
         return False

@@ -10,11 +10,11 @@ sex_keyboard = InlineKeyboardMarkup(inline_keyboard=[
 
 activity_keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(text="1️⃣", callback_data="activity1"),
-            InlineKeyboardButton(text="2️⃣", callback_data="activity2"),
-            InlineKeyboardButton(text="3️⃣", callback_data="activity3"),
-            InlineKeyboardButton(text="4️⃣", callback_data="activity4"),
-            InlineKeyboardButton(text="5️⃣", callback_data="activity5"),
+            InlineKeyboardButton(text="1️⃣", callback_data="activity1.2"),
+            InlineKeyboardButton(text="2️⃣", callback_data="activity1.375"),
+            InlineKeyboardButton(text="3️⃣", callback_data="activity1.55"),
+            InlineKeyboardButton(text="4️⃣", callback_data="activity1.725"),
+            InlineKeyboardButton(text="5️⃣", callback_data="activity1.9"),
         ]
     ],
 )

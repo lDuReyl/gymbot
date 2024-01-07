@@ -38,18 +38,3 @@ async def help(message: Message, bot: Bot) -> None:
     await bot.send_message(message.from_user.id, "help text")
     await message.delete()
 
-@router.message(Command("cancel"), ~StateFilter(default_state))
-async def cancel_in_state(message: Message, state: FSMContext, bot: Bot) -> None:
-    await state.clear()
-    await bot.send_message(message.from_user.id, "Операция отменена")
-
-
-@router.message(Command("cancel"))
-async def cancel(message: Message, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, "Нечего отменять")
-
-
-@router.message(~StateFilter(default_state))
-async def wrong_data_sent(message: Message, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, "Данные введены неправильно.\n Вы можете использовать команду /cancel или ввести данные ещё раз:")
-

@@ -16,21 +16,21 @@ async def get_PFH(message: Message, state: FSMContext, bot : Bot):
     await state.set_state(GetNutrients.proteins)
 
 
-@router.message(StateFilter(GetNutrients.proteins), is_digit())
+@router.message(StateFilter(GetNutrients.proteins), is_digit(), lambda msg: 0 > int(msg.text))
 async def process_proteins(message: Message, state: FSMContext, bot: Bot):
     await state.update_data(proteins=message.text)
     await bot.send_message(message.from_user.id, "Ввведите жиры:")
     await state.set_state(GetNutrients.fats)
 
 
-@router.message(StateFilter(GetNutrients.fats), is_digit())
+@router.message(StateFilter(GetNutrients.fats), is_digit(), lambda msg: 0 > int(msg.text))
 async def process_fats(message: Message, state: FSMContext, bot: Bot):
     await state.update_data(fats=message.text)
     await bot.send_message(message.from_user.id, "Ввведите углеводы:")
     await state.set_state(GetNutrients.carbohydrates)
 
 
-@router.message(StateFilter(GetNutrients.carbohydrates), is_digit())
+@router.message(StateFilter(GetNutrients.carbohydrates), is_digit(), lambda msg: 0 > int(msg.text))
 async def process_carbohydrates(message: Message, state: FSMContext, bot: Bot):
     await state.update_data(carbohydrates=message.text)
     nutrients = await state.get_data()
@@ -40,3 +40,4 @@ async def process_carbohydrates(message: Message, state: FSMContext, bot: Bot):
     subtract_nutrients(message.from_user.id, proteins, fats, carbohydrates)
     await bot.send_message(message.from_user.id, "Осталось:\nБелки: {0}\nЖиры: {1}\nУглеводы: {2}".format(*get_nutrients(message.from_user.id)), reply_markup=default_keyboard)
     await state.clear()
+

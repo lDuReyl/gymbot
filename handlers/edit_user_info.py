@@ -2,35 +2,53 @@ from aiogram import Bot, Router
 from aiogram.types import Message
 from keyboards.inline import edit_user_info_keyboard
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State
 from aiogram.filters import StateFilter
-from filters import _is_digit, _is_int
+from filters import is_int, is_digit
 from stategroups.stategroups import EditUserInfo 
 from db import set_user_field
 
 
 router = Router()
 
-state_to_russian = {EditUserInfo.age : "Возраст", EditUserInfo.weight : "Вес", EditUserInfo.height : "Рост"}
 
-# Uzhas begin
+def create_edit_user_field_handler(field: str, min_value: int, max_value: int, rus_field: str, state_filter : State, filter):
+    @router.message(StateFilter(state_filter), filter())
+    async def edit_user_info(message: Message, state: FSMContext, bot: Bot):
+        value = message.text
+        if min_value < int(value) <= max_value:
+            set_user_field(message.from_user.id, field, value)
+            await bot.send_message(message.from_user.id, f"{rus_field} изменён", reply_markup=edit_user_info_keyboard)
+            await state.set_state(EditUserInfo.choose)
+        else:
+            await bot.send_message(message.from_user.id, f"{rus_field} должен быть от {min_value} до {max_value}")
 
-@router.message(StateFilter(EditUserInfo))
-async def edit_user_info(message: Message, state: FSMContext, bot: Bot):
-    print("In edit_user_info handler")
-    text = message.text.replace(',', '.', 1)
-    current_state = await state.get_state()
-    flag = 0
-    if current_state == EditUserInfo.age and _is_int(text) and 5 < int(text) <= 100:
-        flag = set_user_field(message.from_user.id, "age", text)
-    elif current_state == EditUserInfo.weight and _is_digit(text) and 30 <= float(text) <= 250:
-        flag = set_user_field(message.from_user.id, "weight", text)
-    elif current_state == EditUserInfo.height and _is_digit(text) and 90 <= float(text) <= 250:
-        flag = set_user_field(message.from_user.id, "height", text)
-    if flag:
-        await bot.send_message(message.from_user.id, f"{state_to_russian[current_state]} изменён")
-        await state.set_state(EditUserInfo.choose)
-        await bot.send_message(message.from_user.id, "Что вы хотите изменить?", reply_markup=edit_user_info_keyboard)
-    else:
-        
-# Uzhas end
+    return edit_user_info
+
+
+edit_user_age = create_edit_user_field_handler(
+    "age",
+    5,
+    100,
+    "Возраст",
+    EditUserInfo.age,
+    is_int
+)
+edit_user_weight = create_edit_user_field_handler(
+    "weight",
+    30,
+    250,
+    "Вес",
+    EditUserInfo.weight,
+    is_digit
+)
+edit_user_height= create_edit_user_field_handler(
+    "weight",
+    90,
+    250,
+    "Рост",
+    EditUserInfo.height,
+    is_digit
+)
+
 
