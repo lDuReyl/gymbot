@@ -1,7 +1,7 @@
 import sqlite3
 from typing import Any, Tuple
 
-db = sqlite3.connect("./databases/db.sqlite")
+db = sqlite3.connect("./databases/db.sqlite", check_same_thread=False)
 cursor = db.cursor()
 
 cursor.executescript("""
@@ -49,8 +49,8 @@ def set_nutrients(id: int, proteins: float, fats: float, carbohydrates: float) -
 
 
 def get_nutrients_coefficients(id: int) -> Tuple[float, float, float]:
-    goal = cursor.execute("SELECT `goal` FROM `users` WHERE `id`=?", (id,)).fetchone()
-    if goal == 1: return (0.3, 0.2, 0.5)
+    goal = cursor.execute("SELECT `goal` FROM `users` WHERE `id`=?", (id,)).fetchone()  # 1 - Поддерживать вес, 2 - худеть, 3 - набирать массу
+    if goal == 1: return (0.3, 0.2, 0.5) # БЖУ
     if goal == 2: return (0.3, 0.3, 0.4)
     return (0.5, 0.2, 0.3)
 
@@ -58,9 +58,9 @@ def get_nutrients_coefficients(id: int) -> Tuple[float, float, float]:
 def set_nutrients_by_norm(id: int):
     calories: float = cursor.execute("SELECT `daily_calories` FROM `nutrients` WHERE `id`=?", (id,)).fetchone()[0]
     proteins_coeff, fats_coeff, carbohydrates_coeff = get_nutrients_coefficients(id)
-    proteins = (calories * proteins_coeff) / 4 
-    fats = (calories * fats_coeff) / 9
-    carbohydrates = (calories * carbohydrates_coeff) / 4
+    proteins = round((calories * proteins_coeff) / 4, 2)
+    fats = round((calories * fats_coeff) / 9, 2)
+    carbohydrates = round((calories * carbohydrates_coeff) / 4, 2)
     set_nutrients(id, proteins, fats, carbohydrates)
 
 
@@ -99,15 +99,15 @@ def set_daily_calories(id: int) -> None:
 
 
 def get_nutrients(id: int) -> Tuple[float, float, float]:
-    nutrients = tuple(round(nutrient, 2) for nutrient in cursor.execute("SELECT `proteins`, `fats`, `carbohydrates` FROM `nutrients` WHERE `id`=?", (id,)).fetchone())
+    nutrients = tuple(map(float, cursor.execute("SELECT `proteins`, `fats`, `carbohydrates` FROM `nutrients` WHERE `id`=?", (id,)).fetchone()))
     return nutrients
 
 
 def subtract_nutrients(id: int, proteins: float, fats: float, carbohydrates: float) -> None:
-    old_nutrients = tuple(map(float, get_nutrients(id)))
+    old_nutrients = get_nutrients(id)
     new_proteins = round(old_nutrients[0] - proteins if old_nutrients[0] > proteins else 0, 2)
-    new_fats = round(old_nutrients[1] - fats if old_nutrients[1] > proteins else 0, 2)
-    new_carbohydrates = round(old_nutrients[2] - carbohydrates if old_nutrients[2] > proteins else 0, 2)
+    new_fats = round(old_nutrients[1] - fats if old_nutrients[1] > fats else 0, 2)
+    new_carbohydrates = round(old_nutrients[2] - carbohydrates if old_nutrients[2] > carbohydrates else 0, 2)
     set_nutrients(id, new_proteins, new_fats, new_carbohydrates)
 
 

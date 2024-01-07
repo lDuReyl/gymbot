@@ -1,5 +1,5 @@
 from aiogram import Bot, Router, F
-from aiogram.types import Message
+from aiogram.types import Message, message_id
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter, Command
@@ -13,7 +13,8 @@ router = Router()
 
 @router.message(Command("start"))
 async def start_command(message: Message, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, f"Бот спортзала X\nДля того, чтобы начать, нажмите на кнопку \"Ввести данные\". Вам потребуется ввести возраст, вес, рост и выбрать пол.", reply_markup=register_keyboard)
+    await bot.send_message(message.from_user.id, f"Нажмите на кнопку \"Ввести данные\".\nНужно будет ввести возраст, вес, рост и выбрать пол.", reply_markup=register_keyboard)
+    await bot.delete_message(chat_id=message.from_user.id, message_id=message.message_id)
 
 
 @router.message(F.text == "Ввести данные")

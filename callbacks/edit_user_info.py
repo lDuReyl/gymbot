@@ -21,7 +21,7 @@ async def edit_user_info(query: CallbackQuery, state: FSMContext, bot: Bot):
     if query.data == "change_sex":
         await bot.send_message(query.from_user.id, "Выберите пол", reply_markup=sex_keyboard)
     elif query.data == "change_activity":
-        await bot.send_message(query.from_user.id, "Выберите свою активность", reply_markup=activity_keyboard)
+        await bot.send_message(query.from_user.id, "Выберите свою физическую активность:\n1️⃣ Нет нагрузок и сидячая работа\n2️⃣ Небольшие пробежки или лёгкая гимнастика 1-3 раза в неделю\n3️⃣ Занятия спортом со средними нагрузками 5-7 раз в неделю\n4️⃣ Полноценные тренировки 6-7 раз в неделю\n5️⃣ Ваша работа связана с физическим трудом, вы тренируетесь 2 раза в день, включая в программу тренировок силовые упражнения", reply_markup=activity_keyboard)
     elif query.data == "change_goal":
         await bot.send_message(query.from_user.id, "Выберите цель", reply_markup=goal_keyboard)
     else:

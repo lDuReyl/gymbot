@@ -1,4 +1,5 @@
 import asyncio
+from threading import Event, Thread
 
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
@@ -30,8 +31,8 @@ async def main() -> None:
         callback_edit_user_info_router,
         edit_user_info_router,
     )
-    await dp.start_polling(bot, storage=storage, parse_mode=ParseMode.HTML)
     schedule_set_calories()
+    await dp.start_polling(bot, storage=storage, parse_mode=ParseMode.HTML)
 
 if __name__ == "__main__":
     asyncio.run(main())
