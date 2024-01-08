@@ -41,6 +41,7 @@ edit_user_info_keyboard = InlineKeyboardMarkup(inline_keyboard=[
         ],
         [
             InlineKeyboardButton(text="Цель", callback_data="change_goal"),
+            InlineKeyboardButton(text="Пол", callback_data="change_sex"),
             InlineKeyboardButton(text="Активность", callback_data="change_activity"),
         ],
         [

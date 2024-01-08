@@ -1,5 +1,4 @@
 import asyncio
-from threading import Event, Thread
 
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode

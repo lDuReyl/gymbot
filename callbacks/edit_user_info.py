@@ -3,7 +3,7 @@ from collections.abc import Callable
 from aiogram import Router, Bot, F
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
-from aiogram.filters import StateFilter, and_f
+from aiogram.filters import StateFilter
 from stategroups.stategroups import EditUserInfo
 from keyboards.inline import  edit_user_info_keyboard, sex_keyboard, activity_keyboard, goal_keyboard
 from keyboards.reply import default_keyboard
@@ -13,9 +13,9 @@ router = Router()
 
 states = {"change_age" :  EditUserInfo.age, "change_weight" : EditUserInfo.weight, "change_height" : EditUserInfo.height, "change_sex" : EditUserInfo.sex, "change_goal" : EditUserInfo.goal, "change_activity" : EditUserInfo.activity} 
 
-state_to_russian = {EditUserInfo.age: "возраст", EditUserInfo.weight: "вес", EditUserInfo.height : "рост"}
+state_to_russian = {EditUserInfo.age: "возраст", EditUserInfo.weight: "вес", EditUserInfo.height : "рост", EditUserInfo.sex : "пол"}
 
-@router.callback_query(StateFilter(EditUserInfo.choose), F.data.in_(["change_age", "change_weight", "change_height", "change_goal", "change_activity"]))
+@router.callback_query(StateFilter(EditUserInfo.choose), F.data.in_(["change_age", "change_weight", "change_height", "change_goal", "change_activity", "change_sex"]))
 async def edit_user_info(query: CallbackQuery, state: FSMContext, bot: Bot):
     await state.set_state(states[query.data])
     if query.data == "change_sex":
@@ -43,7 +43,7 @@ def create_edit_user_field_callback(field: str, changer: Callable[[str], str], r
     async def edit_user_info(query: CallbackQuery, state: FSMContext, bot: Bot):
         value = changer(query.data)
         set_user_field(query.from_user.id, field, value)
-        await bot.send_message(query.from_user.id, f"{rus_field} {'изменён' if rus_field == 'sex' else 'изменена'}", reply_markup=edit_user_info_keyboard)
+        await bot.send_message(query.from_user.id, f"{rus_field} {'изменён' if rus_field == 'Пол' else 'изменена'}", reply_markup=edit_user_info_keyboard)
         await state.set_state(EditUserInfo.choose)
     return edit_user_info
 

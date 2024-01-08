@@ -24,5 +24,5 @@ def schedule_set_calories():
     continuous_thread.start()
     return cease_continuous_run
 
-every().day.at("23:09").do(set_all_daily_calories)
+every().day.at("02:00").do(set_all_daily_calories)
 
