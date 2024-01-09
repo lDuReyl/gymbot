@@ -12,7 +12,7 @@ router = Router()
 
 @router.message(StateFilter(default_state), F.text=="Ввести БЖУ")
 async def get_PFH(message: Message, state: FSMContext, bot : Bot):
-    await bot.send_message(message.from_user.id, "Введите белки:")
+    await bot.send_message(message.from_user.id, "Введите полученные белки:")
     await state.set_state(GetNutrients.proteins)
 
 
@@ -20,7 +20,7 @@ async def get_PFH(message: Message, state: FSMContext, bot : Bot):
 async def process_proteins(message: Message, state: FSMContext, bot: Bot):
     if int(message.text) >= 0:
         await state.update_data(proteins=message.text)
-        await bot.send_message(message.from_user.id, "Ввведите жиры:")
+        await bot.send_message(message.from_user.id, "Ввведите полученные жиры:")
         await state.set_state(GetNutrients.fats)
     else:
         await bot.send_message(message.from_user.id, "Белки должны быть больше 0")
@@ -30,7 +30,7 @@ async def process_proteins(message: Message, state: FSMContext, bot: Bot):
 async def process_fats(message: Message, state: FSMContext, bot: Bot):
     if int(message.text) >= 0:
         await state.update_data(fats=message.text)
-        await bot.send_message(message.from_user.id, "Ввведите углеводы:")
+        await bot.send_message(message.from_user.id, "Ввведите полученные углеводы:")
         await state.set_state(GetNutrients.carbohydrates)
     else:
         await bot.send_message(message.from_user.id, "Жиры должны быть больше 0")

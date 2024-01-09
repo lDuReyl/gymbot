@@ -11,7 +11,7 @@ router = Router()
 
 @router.callback_query(StateFilter(UserRegistration.sex), F.data.in_(["male", "female"]))
 async def get_sex(query: CallbackQuery, state: FSMContext, bot: Bot):
-    await state.update_data(sex=query.data)
+    await state.update_data(sex=("1" if query.data=="male" else "0"))
     await bot.send_message(query.from_user.id, "Выберите свою физическую активность:\n1️⃣ Нет нагрузок и сидячая работа\n2️⃣ Небольшие пробежки или лёгкая гимнастика 1-3 раза в неделю\n3️⃣ Занятия спортом со средними нагрузками 5-7 раз в неделю\n4️⃣ Полноценные тренировки 6-7 раз в неделю\n5️⃣ Ваша работа связана с физическим трудом, вы тренируетесь 2 раза в день, включая в программу тренировок силовые упражнения", reply_markup=activity_keyboard)
     await state.set_state(UserRegistration.activity) 
     await query.answer()
@@ -32,10 +32,11 @@ async def get_goal(query: CallbackQuery, state: FSMContext, bot: Bot):
     weight = state_data.get("weight")
     height = state_data.get("height")
     activity = state_data.get("activity")
+    sex = state_data.get("sex")
     goal = query.data[-1:] 
-    add_user(query.from_user.id, age, query.data=="male", weight, height, activity, goal)
+    add_user(query.from_user.id, age, sex, weight, height, activity, goal)
     set_cpfh(query.from_user.id)
-    await bot.send_message(query.from_user.id, f"Вы успешно ввели данные.\nВозраст: {age},\nвес: {weight},\nрост: {height},\nпол: {'мужской' if query.data == 'male' else 'женский'}.\nПри необходимости их можно изменить нажав, на кнопку снизу\n", reply_markup=default_keyboard)
+    await bot.send_message(query.from_user.id, f"Вы успешно ввели данные.\nВозраст: {age},\nвес: {weight},\nрост: {height},\nпол: {'мужской' if sex == '1' else 'женский'}.\nПри необходимости их можно изменить нажав, на кнопку снизу\n", reply_markup=default_keyboard)
     await state.clear()
     await query.answer()
 
