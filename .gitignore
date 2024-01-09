@@ -1,4 +1,4 @@
 .env
-databases/*
+*.sqlite
 venv
 __pycache__

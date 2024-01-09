@@ -1,11 +1,11 @@
-from pydantic import SecretStr
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
-    BOT_TOKEN: SecretStr
-    model_config: SettingsConfigDict = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8"
-    )
+    BOT_TOKEN: str
+    model_config: dict = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8"
+    }
 
 config = Settings()

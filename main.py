@@ -12,15 +12,17 @@ from callbacks.edit_user_info import router as callback_edit_user_info_router
 from scheduler import schedule_set_calories
 from config_reader import config
 
+
 dp = Dispatcher()
 storage = MemoryStorage()
+
 
 async def startup():
     print("Бот запущен")
 
 
 async def main() -> None:
-    bot = Bot(config.BOT_TOKEN.get_secret_value())
+    bot = Bot(config.BOT_TOKEN)
     dp.startup.register(startup)
     dp.include_routers(
         general_commands_router,
@@ -29,7 +31,7 @@ async def main() -> None:
         nutrients_router,
         callback_edit_user_info_router,
         edit_user_info_router,
-    )
+   )
     schedule_set_calories()
     await dp.start_polling(bot, storage=storage, parse_mode=ParseMode.HTML)
 
