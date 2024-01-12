@@ -18,7 +18,7 @@ async def get_sex(query: CallbackQuery, state: FSMContext, bot: Bot):
 @router.callback_query(StateFilter(UserRegistration.goal), F.data[:4] == "goal")
 async def get_goal(query: CallbackQuery, state: FSMContext, bot: Bot):
     state_data = await state.get_data()
-    sex = "1" if query.data=="male" else "0"
+    sex = '1' if query.data=="male" else '0'
     weight = state_data.get("weight")
     goal = query.data[4]
     add_user(query.from_user.id, sex, weight, goal)

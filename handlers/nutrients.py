@@ -2,7 +2,6 @@ from aiogram import Bot, Router, F
 from aiogram.types import Message
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import default_state
 from filters import is_digit
 from stategroups.stategroups import GetNutrients
 from db import get_nutrients, subtract_nutrients 
@@ -10,7 +9,7 @@ from keyboards.reply import default_keyboard
 
 router = Router()
 
-@router.message(StateFilter(default_state), F.text=="Ввести БЖУ")
+@router.message(F.text=="Ввести БЖУ")
 async def get_PFH(message: Message, state: FSMContext, bot : Bot):
     await bot.send_message(message.from_user.id, "Введите полученные белки:")
     await state.set_state(GetNutrients.proteins)
