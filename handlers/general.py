@@ -1,8 +1,7 @@
 from aiogram import Bot, Router, F
-from aiogram.types import Message, message_id
-from aiogram.fsm.state import default_state
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from aiogram.filters import StateFilter, Command
+from aiogram.filters import Command
 from keyboards.reply import register_keyboard
 from keyboards.inline import edit_user_info_keyboard
 from stategroups.stategroups import UserRegistration, EditUserInfo
@@ -19,8 +18,8 @@ async def start_command(message: Message, bot: Bot) -> None:
 
 @router.message(F.text == "Ввести данные")
 async def set_age(message: Message, state: FSMContext, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, f"Введите ваш возраст:") 
-    await state.set_state(UserRegistration.age)
+    await bot.send_message(message.from_user.id, f"Введите ваш вес:") 
+    await state.set_state(UserRegistration.weight)
 
 
 @router.message(F.text == "Изменить данные")
