@@ -1,5 +1,5 @@
 from aiogram import Bot, Router, F
-from aiogram.types import Message, message_id
+from aiogram.types import Message
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter, Command
@@ -34,8 +34,9 @@ async def get_daily_PFH_norm(message: Message, bot: Bot):
     await bot.send_message(message.from_user.id, "Осталось:\nБелки: {0}\nЖиры: {1}\nУглеводы: {2}".format(*get_nutrients(message.from_user.id)))
 
 
-@router.message(Command("help"))
-async def help(message: Message, bot: Bot) -> None:
-    await bot.send_message(message.from_user.id, "help text")
-    await message.delete()
+
+@router.message(~StateFilter(default_state), ~F.text[0] == '/')
+async def wrong_data(message: Message, bot: Bot):
+    await bot.send_message(message.from_user.id, "Данные введены неправильно")
+
 

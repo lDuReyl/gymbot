@@ -12,16 +12,16 @@ from db import set_user_field
 router = Router()
 
 
-def create_edit_user_field_handler(field: str, min_value: int, max_value: int, rus_field: str, state_filter : State, filter):
+def create_edit_user_field_handler(field: str, min_value: int, max_value: int, translated_field: str, state_filter : State, filter):
     @router.message(StateFilter(state_filter), filter())
     async def edit_user_info(message: Message, state: FSMContext, bot: Bot):
         value = message.text
         if min_value < int(value) <= max_value:
             set_user_field(message.from_user.id, field, value)
-            await bot.send_message(message.from_user.id, f"{rus_field} изменён", reply_markup=edit_user_info_keyboard)
+            await bot.send_message(message.from_user.id, f"{translated_field} изменён", reply_markup=edit_user_info_keyboard)
             await state.set_state(EditUserInfo.choose)
         else:
-            await bot.send_message(message.from_user.id, f"{rus_field} должен быть от {min_value} до {max_value}")
+            await bot.send_message(message.from_user.id, f"{translated_field} должен быть от {min_value} до {max_value}")
 
     return edit_user_info
 

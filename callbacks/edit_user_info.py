@@ -14,7 +14,7 @@ router = Router()
 
 states = {"change_age" :  EditUserInfo.age, "change_weight" : EditUserInfo.weight, "change_height" : EditUserInfo.height, "change_sex" : EditUserInfo.sex, "change_goal" : EditUserInfo.goal, "change_activity" : EditUserInfo.activity} 
 
-state_to_russian = {EditUserInfo.age: "возраст", EditUserInfo.weight: "вес", EditUserInfo.height : "рост", EditUserInfo.sex : "пол"}
+state_translations = {EditUserInfo.age: "возраст", EditUserInfo.weight: "вес", EditUserInfo.height : "рост", EditUserInfo.sex : "пол"}
 
 @router.callback_query(StateFilter(EditUserInfo.choose), F.data.in_(["change_age", "change_weight", "change_height", "change_goal", "change_activity", "change_sex"]))
 async def edit_user_info(query: CallbackQuery, state: FSMContext, bot: Bot):
@@ -27,7 +27,7 @@ async def edit_user_info(query: CallbackQuery, state: FSMContext, bot: Bot):
         await bot.send_message(query.from_user.id, "Выберите цель", reply_markup=goal_keyboard)
     else:
         current_state = await state.get_state()
-        await bot.send_message(query.from_user.id, f"Введите {state_to_russian[current_state]}:")
+        await bot.send_message(query.from_user.id, f"Введите {state_translations[current_state]}:")
     await query.answer()
 
 
@@ -38,13 +38,13 @@ async def cancel_edit_user_info(query: CallbackQuery, state: FSMContext, bot : B
     await query.answer()
 
 
-def create_edit_user_field_callback(field: str, changer: Callable[[str], str], rus_field: str, accaptable_data : List[str]):
+def create_edit_user_field_callback(field: str, changer: Callable[[str], str], translated_field: str, accaptable_data : List[str]):
     state_filter = states["change_" + field]
     @router.callback_query(StateFilter(state_filter), F.data.in_(accaptable_data))
     async def edit_user_info(query: CallbackQuery, state: FSMContext, bot: Bot):
         value = changer(query.data)
         set_user_field(query.from_user.id, field, value)
-        await bot.send_message(query.from_user.id, f"{rus_field} {'изменён' if rus_field == 'Пол' else 'изменена'}", reply_markup=edit_user_info_keyboard)
+        await bot.send_message(query.from_user.id, f"{translated_field} {'изменён' if translated_field == 'Пол' else 'изменена'}", reply_markup=edit_user_info_keyboard)
         await state.set_state(EditUserInfo.choose)
     return edit_user_info
 

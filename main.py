@@ -25,12 +25,12 @@ async def main() -> None:
     bot = Bot(config.BOT_TOKEN)
     dp.startup.register(startup)
     dp.include_routers(
-        general_commands_router,
         registration_commands_router,
         callback_registration_router,
         nutrients_router,
         callback_edit_user_info_router,
         edit_user_info_router,
+        general_commands_router,
    )
     schedule_set_calories()
     await dp.start_polling(bot, storage=storage, parse_mode=ParseMode.HTML)
